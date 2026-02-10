@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProHub - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --bg: #ecf0f1;
+            --surface: #ffffff;
+            --text: #2c3e50;
+            --border: #bdc3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            background: var(--bg);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #34495e;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        /* Lists */
+        .list {
+            list-style: none;
+        }
+
+        .list-item {
+            background: var(--bg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .list-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .list-item-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .list-item-content p {
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text);
+        }
+
+        /* Error */
+        .error {
+            background: #fee;
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--danger);
+        }
+
+        /* Success */
+        .success {
+            background: #efe;
+            color: var(--success);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--success);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            .nav {
+                padding: 0.5rem 1rem;
+            }
+            .main {
+                padding: 0 1rem;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🚀 ProHub</h1>
+        <div class="user-info">
+            <span id="username">Laden...</span>
+            <button class="btn-logout" onclick="logout()">Abmelden</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <button class="nav-btn active" onclick="showSection('notes')">📝 Notizen</button>
+        <button class="nav-btn" onclick="showSection('calendar')">📅 Kalender</button>
+        <button class="nav-btn" onclick="showSection('finance')">💰 Finanzen</button>
+        <button class="nav-btn" onclick="showSection('mail')">📧 E-Mail</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <!-- Notes Section -->
+        <div id="notes" class="section active">
+            <div class="card">
+                <h2>Neue Notiz</h2>
+                <div class="form-group">
+                    <label>Titel</label>
+                    <input type="text" id="note-title" placeholder="Titel der Notiz">
+                </div>
+                <div class="form-group">
+                    <label>Inhalt</label>
+                    <textarea id="note-content" placeholder="Notizinhalt..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priorität</label>
+                    <select id="note-priority">
+                        <option value="low">Niedrig</option>
+                        <option value="medium" selected>Mittel</option>
+                        <option value="high">Hoch</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="createNote()">Notiz erstellen</button>
+            </div>
+
+            <div class="card">
+                <h2>Meine Notizen</h2>
+                <div id="notes-loading" class="loading">Lade Notizen...</div>
+                <ul id="notes-list" class="list"></ul>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div id="calendar" class="section">
+            <div class="card">
+                <h2>Neuer Termin</h2>
+                <div class="form-group">
+                    <label>Titel</label>
+                    <input type="text" id="event-title" placeholder="Titel des Termins">
+                </div>
+                <div class="form-group">
+                    <label>Datum</label>
+                    <input type="date" id="event-date">
+                </div>
+                <div class="form-group">
+                    <label>Beschreibung</label>
+                    <textarea id="event-description" placeholder="Beschreibung..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="createEvent()">Termin erstellen</button>
+            </div>
+
+            <div class="card">
+                <h2>Meine Termine</h2>
+                <div id="events-loading" class="loading">Lade Termine...</div>
+                <ul id="events-list" class="list"></ul>
+            </div>
+        </div>
+
+        <!-- Finance Section -->
+        <div id="finance" class="section">
+            <div class="card">
+                <h2>Neue Transaktion</h2>
+                <div class="form-group">
+                    <label>Titel</label>
+                    <input type="text" id="transaction-title" placeholder="z.B. Einkauf">
+                </div>
+                <div class="form-group">
+                    <label>Betrag (€)</label>
+                    <input type="number" step="0.01" id="transaction-amount" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Typ</label>
+                    <select id="transaction-type">
+                        <option value="expense">Ausgabe</option>
+                        <option value="income">Einnahme</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Datum</label>
+                    <input type="date" id="transaction-date">
+                </div>
+                <button class="btn btn-primary" onclick="createTransaction()">Transaktion erstellen</button>
+            </div>
+
+            <div class="card">
+                <h2>Übersicht</h2>
+                <div id="finance-summary-loading" class="loading">Lade Übersicht...</div>
+                <div id="finance-summary"></div>
+            </div>
+
+            <div class="card">
+                <h2>Transaktionen</h2>
+                <div id="transactions-loading" class="loading">Lade Transaktionen...</div>
+                <ul id="transactions-list" class="list"></ul>
+            </div>
+        </div>
+
+        <!-- Mail Section -->
+        <div id="mail" class="section">
+            <div class="card">
+                <h2>📧 E-Mail</h2>
+                <p>E-Mail Funktion kommt bald...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ========== AUTHENTICATION ==========
+const API_BASE = '/api';
+let token = null;
+
+// Wait for everything to be ready
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('🔵 APP.HTML LÄDT...');
+    
+    // Get token
+    token = localStorage.getItem('token');
+    console.log('🔵 Token aus localStorage:', token);
+
+    // Check authentication
+    if (!token) {
+        console.log('❌ KEIN TOKEN! Redirect zu login...');
+        window.location.href = '/login.html';
+        return;
+    }
+    
+    console.log('✅ Token gefunden! Länge:', token.length);
+    
+    // Initialize app
+    verifyAuth();
+    loadNotes();
+    
+    // Set today's date as default
+    document.getElementById('event-date').valueAsDate = new Date();
+    document.getElementById('transaction-date').valueAsDate = new Date();
+});
+
+        // Verify token and load user info
+        async function verifyAuth() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    console.error("401 bei /auth/me — Token bleibt zum Debuggen erhalten:", token);
+                    // logout();  // <- TEMP AUSKOMMENTIEREN
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Authentication failed');
+                }
+
+                const user = await response.json();
+                document.getElementById('username').textContent = user.username;
+            } catch (error) {
+                console.error('Auth error:', error);
+                logout();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login.html';
+        }
+
+        // ========== API HELPER ==========
+        async function apiCall(endpoint, options = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+                ...options.headers
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    ...options,
+                    headers
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return null;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                if (response.status === 204) {
+                    return null;
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // ========== NAVIGATION ==========
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            // Load data for section
+            if (sectionId === 'notes') loadNotes();
+            if (sectionId === 'calendar') loadEvents();
+            if (sectionId === 'finance') { loadTransactions(); loadFinanceSummary(); }
+        }
+
+        // ========== NOTES ==========
+        async function loadNotes() {
+            try {
+                document.getElementById('notes-loading').style.display = 'block';
+                const notes = await apiCall('/notes/');
+                
+                const listEl = document.getElementById('notes-list');
+                listEl.innerHTML = '';
+
+                if (notes && notes.length > 0) {
+                    notes.forEach(note => {
+                        const li = document.createElement('li');
+                        li.className = 'list-item';
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <h3>${escapeHtml(note.title)}</h3>
+                                <p>${escapeHtml(note.content.substring(0, 100))}${note.content.length > 100 ? '...' : ''}</p>
+                                <small>Priorität: ${note.priority} | ${new Date(note.created_at).toLocaleDateString()}</small>
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-danger btn-small" onclick="deleteNote(${note.id})">Löschen</button>
+                            </div>
+                        `;
+                        listEl.appendChild(li);
+                    });
+                } else {
+                    listEl.innerHTML = '<p style="text-align:center;color:#999;">Keine Notizen vorhanden</p>';
+                }
+
+                document.getElementById('notes-loading').style.display = 'none';
+            } catch (error) {
+                document.getElementById('notes-loading').innerHTML = '<div class="error">Fehler beim Laden der Notizen</div>';
+            }
+        }
+
+        async function createNote() {
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+            const priority = document.getElementById('note-priority').value;
+
+            if (!title || !content) {
+                alert('Bitte Titel und Inhalt eingeben');
+                return;
+            }
+
+            try {
+                await apiCall('/notes/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        priority,
+                        in_calendar: false
+                    })
+                });
+
+                // Clear form
+                document.getElementById('note-title').value = '';
+                document.getElementById('note-content').value = '';
+                document.getElementById('note-priority').value = 'medium';
+
+                // Reload notes
+                loadNotes();
+            } catch (error) {
+                alert('Fehler beim Erstellen der Notiz');
+            }
+        }
+
+        async function deleteNote(id) {
+            if (!confirm('Notiz wirklich löschen?')) return;
+
+            try {
+                await apiCall(`/notes/${id}`, { method: 'DELETE' });
+                loadNotes();
+            } catch (error) {
+                alert('Fehler beim Löschen');
+            }
+        }
+
+        // ========== CALENDAR ==========
+        async function loadEvents() {
+            try {
+                document.getElementById('events-loading').style.display = 'block';
+                const events = await apiCall('/calendar/');
+                
+                const listEl = document.getElementById('events-list');
+                listEl.innerHTML = '';
+
+                if (events && events.length > 0) {
+                    events.forEach(event => {
+                        const li = document.createElement('li');
+                        li.className = 'list-item';
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <h3>${escapeHtml(event.title)}</h3>
+                                <p>${new Date(event.date).toLocaleDateString('de-DE')}</p>
+                                ${event.description ? `<small>${escapeHtml(event.description)}</small>` : ''}
+                            </div>
+                            <div class="list-item-actions">
+                                <button class="btn btn-danger btn-small" onclick="deleteEvent(${event.id})">Löschen</button>
+                            </div>
+                        `;
+                        listEl.appendChild(li);
+                    });
+                } else {
+                    listEl.innerHTML = '<p style="text-align:center;color:#999;">Keine Termine vorhanden</p>';
+                }
+
+                document.getElementById('events-loading').style.display = 'none';
+            } catch (error) {
+                document.getElementById('events-loading').innerHTML = '<div class="error">Fehler beim Laden</div>';
+            }
+        }
+
+        async function createEvent() {
+            const title = document.getElementById('event-title').value;
+            const date = document.getElementById('event-date').value;
+            const description = document.getElementById('event-description').value;
+
+            if (!title || !date) {
+                alert('Bitte Titel und Datum eingeben');
+                return;
+            }
+
+            try {
+                await apiCall('/calendar/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        date,
+                        description,
+                        priority: 'medium'
+                    })
+                });
+
+                // Clear form
+                document.getElementById('event-title').value = '';
+                document.getElementById('event-date').value = '';
+                document.getElementById('event-description').value = '';
+
+                loadEvents();
+            } catch (error) {
+                alert('Fehler beim Erstellen');
+            }
+        }
+
+        async function deleteEvent(id) {
+            if (!confirm('Termin wirklich löschen?')) return;
+
+            try {
+                await apiCall(`/calendar/${id}`, { method: 'DELETE' });
+                loadEvents();
+            } catch (error) {
+                alert('Fehler beim Löschen');
+            }
+        }
+
+        // ========== FINANCE ==========
+        async function loadTransactions() {
+            try {
+                document.getElementById('transactions-loading').style.display = 'block';
+                const transactions = await apiCall('/finance/transactions?limit=20');
+                
+                const listEl = document.getElementById('transactions-list');
+                listEl.innerHTML = '';
+
+                if (transactions && transactions.length > 0) {
+                    transactions.forEach(t => {
+                        const li = document.createElement('li');
+                        li.className = 'list-item';
+                        const typeColor = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+                        const sign = t.type === 'income' ? '+' : '-';
+                        li.innerHTML = `
+                            <div class="list-item-content">
+                                <h3>${escapeHtml(t.title)}</h3>
+                                <p style="color:${typeColor};font-weight:600;font-size:1.1rem;">${sign}${parseFloat(t.amount).toFixed(2)} €</p>
+                                <small>${new Date(t.date).toLocaleDateString('de-DE')}</small>
+                            </div>
+                        `;
+                        listEl.appendChild(li);
+                    });
+                } else {
+                    listEl.innerHTML = '<p style="text-align:center;color:#999;">Keine Transaktionen vorhanden</p>';
+                }
+
+                document.getElementById('transactions-loading').style.display = 'none';
+            } catch (error) {
+                document.getElementById('transactions-loading').innerHTML = '<div class="error">Fehler beim Laden</div>';
+            }
+        }
+
+        async function loadFinanceSummary() {
+            try {
+                document.getElementById('finance-summary-loading').style.display = 'block';
+                const summary = await apiCall('/finance/summary');
+                
+                if (summary) {
+                    const summaryEl = document.getElementById('finance-summary');
+                    summaryEl.innerHTML = `
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:1rem;">
+                            <div style="background:var(--bg);padding:1.5rem;border-radius:8px;">
+                                <h4 style="color:var(--success);margin-bottom:0.5rem;">Einnahmen</h4>
+                                <p style="font-size:1.5rem;font-weight:700;">+${parseFloat(summary.total_income).toFixed(2)} €</p>
+                            </div>
+                            <div style="background:var(--bg);padding:1.5rem;border-radius:8px;">
+                                <h4 style="color:var(--danger);margin-bottom:0.5rem;">Ausgaben</h4>
+                                <p style="font-size:1.5rem;font-weight:700;">-${parseFloat(summary.total_expense).toFixed(2)} €</p>
+                            </div>
+                            <div style="background:var(--bg);padding:1.5rem;border-radius:8px;">
+                                <h4 style="color:var(--primary);margin-bottom:0.5rem;">Bilanz</h4>
+                                <p style="font-size:1.5rem;font-weight:700;">${parseFloat(summary.balance).toFixed(2)} €</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                document.getElementById('finance-summary-loading').style.display = 'none';
+            } catch (error) {
+                document.getElementById('finance-summary-loading').innerHTML = '<div class="error">Fehler beim Laden</div>';
+            }
+        }
+
+        async function createTransaction() {
+            const title = document.getElementById('transaction-title').value;
+            const amount = document.getElementById('transaction-amount').value;
+            const type = document.getElementById('transaction-type').value;
+            const date = document.getElementById('transaction-date').value;
+
+            if (!title || !amount || !date) {
+                alert('Bitte alle Felder ausfüllen');
+                return;
+            }
+
+            try {
+                await apiCall('/finance/transactions', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        title,
+                        amount: parseFloat(amount),
+                        type,
+                        date
+                    })
+                });
+
+                // Clear form
+                document.getElementById('transaction-title').value = '';
+                document.getElementById('transaction-amount').value = '';
+                document.getElementById('transaction-type').value = 'expense';
+                document.getElementById('transaction-date').value = '';
+
+                loadTransactions();
+                loadFinanceSummary();
+            } catch (error) {
+                alert('Fehler beim Erstellen');
+            }
+        }
+
+        // ========== HELPERS ==========
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+    </script>
+</body>
+</html>

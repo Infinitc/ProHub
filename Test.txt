@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+HASH=$(python3 - <<'PY'
+from passlib.context import CryptContext
+ctx = CryptContext(schemes=["argon2"])
+print(ctx.hash("Test1234"))
+PY
+)
+
+echo "HASH prefix: ${HASH:0:20}"
+
+sudo -u postgres psql prohub_db -c "INSERT INTO users (username, email, hashed_password, created_at) VALUES ('paul', 'paul@polypaul.de', '$HASH', NOW()) ON CONFLICT (username) DO UPDATE SET hashed_password = EXCLUDED.hashed_password;"
+
+echo "✓ User paul mit Passwort 'Test1234' angelegt!"

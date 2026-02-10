@@ -1,0 +1,27 @@
+# ProHub v2.0 Requirements - Python 3.13 Compatible
+# Install with: pip3 install -r requirements.txt --break-system-packages
+
+# FastAPI Core
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Database
+sqlalchemy
+psycopg2-binary
+
+# Authentication & Security
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt
+cryptography
+
+# Validation
+pydantic
+pydantic-settings
+email-validator
+
+# Environment
+python-dotenv
+
+# Note: Mail (IMAP/SMTP) uses Python stdlib - no additional packages needed
