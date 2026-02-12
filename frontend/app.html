@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProHub - Login</title>
+    <title>PolyHub - Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -12,343 +12,1621 @@
         }
 
         :root {
-            --primary: #3B82F6;
-            --primary-dark: #2563EB;
-            --background: #F9FAFB;
-            --surface: #FFFFFF;
-            --text: #111827;
-            --text-light: #6B7280;
-            --border: #E5E7EB;
-            --success: #10B981;
-            --danger: #EF4444;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: var(--background);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-lg);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 440px;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-card {
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 48px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 1px solid var(--border);
-        }
-
-        .logo-section {
-            text-align: center;
-            margin-bottom: 32px;
+            gap: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         .logo-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 20px;
-            background: var(--primary);
-            border-radius: 16px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 1.5rem;
         }
 
-        .logo-section h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--text);
-            margin-bottom: 8px;
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .logo-section p {
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Navigation */
+        .nav {
+            background: white;
+            padding: 0.5rem 2rem;
+            display: flex;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            position: sticky;
+            top: 72px;
+            z-index: 90;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.25rem;
+            background: transparent;
+            border: none;
             color: var(--text-light);
-            font-size: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-size: 0.95rem;
         }
 
+        .nav-btn:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.25rem;
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Notes Grid */
+        .notes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .note-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .note-card.priority-high {
+            border-left: 4px solid var(--danger);
+        }
+
+        .note-card.priority-medium {
+            border-left: 4px solid var(--warning);
+        }
+
+        .note-card.priority-low {
+            border-left: 4px solid var(--success);
+        }
+
+        .note-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .note-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .note-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .priority-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-badge.high {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .priority-badge.medium {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .priority-badge.low {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        /* Calendar */
+        .calendar {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.25rem;
+            color: var(--text);
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav button {
+            padding: 0.5rem 1rem;
+            background: var(--bg);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            font-weight: 600;
+            padding: 0.5rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.3rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 55px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .calendar-day:hover {
+            background: var(--bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+        }
+
+        .calendar-day-number {
+            font-weight: 500;
+            margin-bottom: 0.15rem;
+            font-size: 0.85rem;
+        }
+
+        .calendar-day-notes {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            width: 100%;
+            font-size: 0.65rem;
+        }
+
+        .calendar-note-badge {
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-size: 0.6rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .calendar-note-badge.high {
+            background: var(--danger);
+            color: white;
+        }
+
+        .calendar-note-badge.medium {
+            background: var(--warning);
+            color: white;
+        }
+
+        .calendar-note-badge.low {
+            background: var(--success);
+            color: white;
+        }
+
+        .calendar-day:hover {
+            background: var(--bg);
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .calendar-day.today.has-event::after {
+            background: white;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.2s;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: var(--text);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg);
+        }
+
+        /* Form */
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            font-size: 14px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--bg);
             color: var(--text);
         }
 
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            font-size: 16px;
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        /* Sync Button */
+        .sync-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: white;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
             transition: all 0.2s;
-            font-family: inherit;
         }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .error-message {
-            background: #FEE2E2;
-            color: var(--danger);
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: none;
-            border-left: 4px solid var(--danger);
-        }
-
-        .error-message.active {
-            display: block;
-            animation: shake 0.5s;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        .btn-login {
-            width: 100%;
-            padding: 14px;
+        .sync-btn:hover {
             background: var(--primary);
             color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
         }
 
-        .btn-login:hover:not(:disabled) {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        /* Finance Summary */
+        .finance-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
-        .btn-login:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .finance-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 24px;
+        .finance-card h4 {
+            font-size: 0.875rem;
             color: var(--text-light);
-            font-size: 14px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .finance-card .amount {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .finance-card.income .amount {
+            color: var(--success);
+        }
+
+        .finance-card.expense .amount {
+            color: var(--danger);
+        }
+
+        .finance-card.balance .amount {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .logo {
+                font-size: 1.25rem;
+            }
+            .logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1.25rem;
+            }
+            .user-info {
+                gap: 0.5rem;
+            }
+            .user-info span {
+                display: none;
+            }
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+            }
+            .btn-logout {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.85rem;
+            }
+            .nav {
+                padding: 0.5rem 1rem;
+                top: 55px;
+                gap: 0.25rem;
+            }
+            .nav-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+            .main {
+                padding: 1rem;
+            }
+            .notes-grid {
+                grid-template-columns: 1fr;
+            }
+            .fab {
+                bottom: 1rem;
+                right: 1rem;
+                width: 50px;
+                height: 50px;
+            }
+            .calendar {
+                padding: 1rem;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            .calendar-grid {
+                gap: 0.25rem;
+            }
+            .calendar-day {
+                min-height: 50px;
+                font-size: 0.8rem;
+                padding: 0.2rem;
+            }
+            .calendar-day-number {
+                font-size: 0.8rem;
+            }
+            .calendar-note-badge {
+                font-size: 0.55rem;
+                padding: 1px 3px;
+            }
+            .calendar-header h3 {
+                font-size: 1.1rem;
+            }
+            .calendar-nav button {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.9rem;
+            }
+            .calendar-day-header {
+                font-size: 0.75rem;
+                padding: 0.3rem;
+            }
+            .card {
+                padding: 1rem;
+            }
+            .modal-content {
+                padding: 1.5rem;
+            }
         }
 
         @media (max-width: 480px) {
-            .login-card {
-                padding: 32px;
+            .calendar-grid {
+                gap: 0.15rem;
+            }
+            .calendar-day {
+                min-height: 45px;
+                font-size: 0.75rem;
+            }
+            .calendar-day-number {
+                font-size: 0.75rem;
+            }
+            .calendar-note-badge {
+                font-size: 0.5rem;
+                padding: 1px 2px;
+            }
+            .calendar-day-header {
+                font-size: 0.7rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-card">
-            <div class="logo-section">
-                <div class="logo-icon">🚀</div>
-                <h1>ProHub</h1>
-                <p>Willkommen zurück</p>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">💼</div>
+            <span>PolyHub</span>
+        </div>
+        <div class="user-info">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <span id="username">Laden...</span>
+            <button class="btn-logout" onclick="logout()">Abmelden</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <button class="nav-btn active" onclick="showSection('notes')">📝 Notizen</button>
+        <button class="nav-btn" onclick="showSection('calendar')">📅 Kalender</button>
+        <button class="nav-btn" onclick="showSection('finance')">💰 Finanzen</button>
+        <button class="nav-btn" onclick="showSection('mail')">📧 E-Mail</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+        <!-- Notes Section -->
+        <div id="notes" class="section active">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 1rem;">
+                <select id="notesSortBy" onchange="loadNotes()" style="padding: 0.5rem 1rem; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; font-weight: 600;">
+                    <option value="deadline">📅 Nach Deadline</option>
+                    <option value="priority">⚡ Nach Priorität</option>
+                    <option value="created">🕐 Nach Erstellung</option>
+                </select>
+            </div>
+            <div id="notes-grid" class="notes-grid"></div>
+            <div id="notes-empty" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📝</div>
+                <h3>Keine Notizen</h3>
+                <p>Klicke auf + um deine erste Notiz zu erstellen</p>
+            </div>
+        </div>
+
+        <!-- Calendar Section -->
+        <div id="calendar" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📅 Kalender</h2>
+                    <button class="sync-btn" onclick="showCalDAVInfo()">
+                        🔄 iOS Sync
+                    </button>
+                </div>
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <h3 id="currentMonth">Februar 2026</h3>
+                        <div class="calendar-nav">
+                            <button onclick="previousMonth()">◀</button>
+                            <button onclick="nextMonth()">▶</button>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
             </div>
 
-            <div id="errorMessage" class="error-message"></div>
-
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Benutzername</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        placeholder="Dein Benutzername"
-                        required
-                        autocomplete="username"
-                    >
+            <div class="card">
+                <div class="card-header">
+                    <h2>Anstehende Termine</h2>
                 </div>
+                <div id="events-list"></div>
+            </div>
+        </div>
 
-                <div class="form-group">
-                    <label for="password">Passwort</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        placeholder="••••••••"
-                        required
-                        autocomplete="current-password"
-                    >
+        <!-- Finance Section -->
+        <div id="finance" class="section">
+            <div id="finance-summary" class="finance-summary"></div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2>Letzte Transaktionen</h2>
                 </div>
+                <div id="transactions-list"></div>
+            </div>
+        </div>
 
-                <button type="submit" class="btn-login" id="loginBtn">
-                    Anmelden
-                </button>
-            </form>
+        <!-- Mail Section -->
+        <div id="mail" class="section">
+            <div class="empty-state">
+                <div class="empty-state-icon">📧</div>
+                <h3>E-Mail Funktion</h3>
+                <p>Kommt bald...</p>
+            </div>
+        </div>
+    </div>
 
-            <p class="footer-text">
-                ProHub v2.0 - Secure Login
-            </p>
+    <!-- Floating Action Button -->
+    <button class="fab" id="fab" onclick="openCreateModal()">+</button>
+
+    <!-- Create Note Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Neue Notiz</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Titel</label>
+                <input type="text" id="itemTitle" placeholder="Titel eingeben...">
+            </div>
+            <div class="form-group" id="contentGroup">
+                <label>Inhalt</label>
+                <textarea id="itemContent" placeholder="Inhalt..."></textarea>
+            </div>
+            <div class="form-group" id="priorityGroup">
+                <label>Priorität</label>
+                <select id="itemPriority">
+                    <option value="low">🟢 Niedrig</option>
+                    <option value="medium" selected>🟡 Mittel</option>
+                    <option value="high">🔴 Hoch</option>
+                </select>
+            </div>
+            <div class="form-group" id="deadlineGroup" style="display: none;">
+                <label>Fälligkeitsdatum</label>
+                <input type="date" id="itemDeadline">
+            </div>
+            <div class="form-group" id="calendarCheckGroup" style="display: none;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="itemInCalendar" style="width: auto; cursor: pointer;">
+                    <span>📅 Als Termin im Kalender eintragen</span>
+                </label>
+            </div>
+            <div class="form-group" id="dateGroup" style="display: none;">
+                <label>Datum</label>
+                <input type="date" id="itemDate">
+            </div>
+            <div class="form-group" id="amountGroup" style="display: none;">
+                <label>Betrag (€)</label>
+                <input type="number" step="0.01" id="itemAmount" placeholder="0.00">
+            </div>
+            <div class="form-group" id="typeGroup" style="display: none;">
+                <label>Typ</label>
+                <select id="itemType">
+                    <option value="expense">Ausgabe</option>
+                    <option value="income">Einnahme</option>
+                </select>
+            </div>
+            <div class="form-group" id="recurringGroup" style="display: none;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; margin-bottom: 0.75rem;">
+                    <input type="checkbox" id="itemRecurring" onchange="toggleRecurringInterval()" style="width: auto; cursor: pointer;">
+                    <span>🔄 Dauerauftrag (wiederkehrend)</span>
+                </label>
+                <div id="recurringIntervalGroup" style="display: none;">
+                    <label>Intervall</label>
+                    <select id="itemRecurringInterval">
+                        <option value="weekly">Wöchentlich</option>
+                        <option value="monthly" selected>Monatlich</option>
+                        <option value="yearly">Jährlich</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="closeModal()">Abbrechen</button>
+                <button class="btn btn-primary" style="flex: 1;" id="modalSubmit" onclick="submitModal()">Erstellen</button>
+            </div>
         </div>
     </div>
 
     <script>
-        const API_BASE = '/api';
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMessage = document.getElementById('errorMessage');
+// ========== AUTHENTICATION ==========
+const API_BASE = '/api';
+let token = null;
+let currentSection = 'notes';
+let currentMonth = new Date();
+let events = [];
 
-        // Check if already logged in
-        window.addEventListener('load', () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                // Verify token
-                verifyToken(token);
-            }
+// Wait for everything to be ready
+window.addEventListener('DOMContentLoaded', () => {
+    token = localStorage.getItem('token');
+
+    if (!token) {
+        window.location.href = '/login.html';
+        return;
+    }
+    
+    // Initialize app
+    verifyAuth();
+    loadNotes();
+    renderCalendar();
+    
+    // Set today's date as default
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('itemDate').value = today;
+});
+
+async function verifyAuth() {
+    try {
+        const response = await fetch(`${API_BASE}/auth/me`, {
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
-        // Verify existing token
-        async function verifyToken(token) {
-            try {
-                const response = await fetch(`${API_BASE}/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    // Token is valid, redirect to app
-                    window.location.href = '/app.html';
-                } else {
-                    // Token invalid, remove it
-                    localStorage.removeItem('token');
-                }
-            } catch (error) {
-                // Error verifying token
-                localStorage.removeItem('token');
-            }
+        if (response.status === 401) {
+            console.error("401 bei /auth/me");
+            return;
         }
 
-        // Login form handler
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                showError('Bitte Benutzername und Passwort eingeben');
-                return;
-            }
+        if (!response.ok) throw new Error('Authentication failed');
 
-            // Disable button and show loading
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="loading-spinner"></span> Anmeldung läuft...';
-            hideError();
+        const user = await response.json();
+        document.getElementById('username').textContent = user.username;
+        document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
+    } catch (error) {
+        console.error('Auth error:', error);
+    }
+}
 
+function logout() {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+}
+
+// ========== API HELPER ==========
+async function apiCall(endpoint, options = {}) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        ...options.headers
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+            ...options,
+            headers
+        });
+
+        if (response.status === 401) {
+            logout();
+            return null;
+        }
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (response.status === 204) return null;
+
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+// ========== NAVIGATION ==========
+function showSection(sectionId) {
+    currentSection = sectionId;
+    
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+
+    document.getElementById(sectionId).classList.add('active');
+    event.target.classList.add('active');
+
+    if (sectionId === 'notes') loadNotes();
+    if (sectionId === 'calendar') { loadEvents(); renderCalendar(); }
+    if (sectionId === 'finance') { loadTransactions(); loadFinanceSummary(); }
+}
+
+// ========== MODAL ==========
+function openCreateModal() {
+    const modal = document.getElementById('createModal');
+    const title = document.getElementById('modalTitle');
+    
+    // Reset
+    document.getElementById('itemTitle').value = '';
+    document.getElementById('itemContent').value = '';
+    document.getElementById('itemPriority').value = 'medium';
+    document.getElementById('itemAmount').value = '';
+    
+    // Configure based on section
+    document.getElementById('contentGroup').style.display = 'block';
+    document.getElementById('priorityGroup').style.display = 'block';
+    document.getElementById('deadlineGroup').style.display = 'none';
+    document.getElementById('calendarCheckGroup').style.display = 'none';
+    document.getElementById('dateGroup').style.display = 'none';
+    document.getElementById('amountGroup').style.display = 'none';
+    document.getElementById('typeGroup').style.display = 'none';
+    
+    if (currentSection === 'notes') {
+        title.textContent = 'Neue Notiz';
+        document.getElementById('deadlineGroup').style.display = 'block';
+        document.getElementById('calendarCheckGroup').style.display = 'block';
+        document.getElementById('itemDeadline').value = '';
+        document.getElementById('itemInCalendar').checked = false;
+    } else if (currentSection === 'calendar') {
+        title.textContent = 'Neuer Termin';
+        document.getElementById('dateGroup').style.display = 'block';
+        document.getElementById('itemDate').value = new Date().toISOString().split('T')[0];
+    } else if (currentSection === 'finance') {
+        title.textContent = 'Neue Transaktion';
+        document.getElementById('contentGroup').style.display = 'none';
+        document.getElementById('priorityGroup').style.display = 'none';
+        document.getElementById('dateGroup').style.display = 'block';
+        document.getElementById('amountGroup').style.display = 'block';
+        document.getElementById('typeGroup').style.display = 'block';
+        document.getElementById('recurringGroup').style.display = 'block';
+        document.getElementById('itemDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('itemRecurring').checked = false;
+        document.getElementById('recurringIntervalGroup').style.display = 'none';
+    }
+    
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('createModal').classList.remove('active');
+}
+
+function toggleRecurringInterval() {
+    const recurring = document.getElementById('itemRecurring').checked;
+    document.getElementById('recurringIntervalGroup').style.display = recurring ? 'block' : 'none';
+}
+
+async function submitModal() {
+    if (currentSection === 'notes') {
+        await createNote();
+    } else if (currentSection === 'calendar') {
+        await createEvent();
+    } else if (currentSection === 'finance') {
+        await createTransaction();
+    }
+    closeModal();
+}
+
+// ========== NOTES ==========
+async function loadNotes() {
+    try {
+        const notes = await apiCall('/notes/');
+        const gridEl = document.getElementById('notes-grid');
+        const emptyEl = document.getElementById('notes-empty');
+        const sortBy = document.getElementById('notesSortBy')?.value || 'deadline';
+        
+        gridEl.innerHTML = '';
+
+        if (notes && notes.length > 0) {
+            // Sort based on selection
+            notes.sort((a, b) => {
+                if (sortBy === 'deadline') {
+                    const deadlineA = a.deadline ? new Date(a.deadline) : null;
+                    const deadlineB = b.deadline ? new Date(b.deadline) : null;
+                    const now = new Date();
+                    now.setHours(0, 0, 0, 0);
+                    
+                    if (deadlineA && deadlineB) return deadlineA - deadlineB;
+                    if (deadlineA) return -1;
+                    if (deadlineB) return 1;
+                    
+                    const prioOrder = { high: 0, medium: 1, low: 2 };
+                    return prioOrder[a.priority] - prioOrder[b.priority];
+                } else if (sortBy === 'priority') {
+                    const prioOrder = { high: 0, medium: 1, low: 2 };
+                    return prioOrder[a.priority] - prioOrder[b.priority];
+                } else {
+                    return new Date(b.created_at) - new Date(a.created_at);
+                }
+            });
+            
+            notes.forEach(note => {
+                const card = document.createElement('div');
+                const isOverdue = note.deadline && new Date(note.deadline) < new Date();
+                
+                card.className = `note-card priority-${note.priority}`;
+                if (isOverdue) card.style.borderColor = 'var(--danger)';
+                
+                const prioIcons = {
+                    high: '🔴 Hoch',
+                    medium: '🟡 Mittel',
+                    low: '🟢 Niedrig'
+                };
+                
+                let deadlineHtml = '';
+                if (note.deadline) {
+                    const deadlineDate = new Date(note.deadline);
+                    const formattedDate = deadlineDate.toLocaleDateString('de-DE', { 
+                        day: '2-digit', 
+                        month: 'short'
+                    });
+                    const style = isOverdue ? 'color: var(--danger); font-weight: 700;' : 'color: var(--text-light);';
+                    deadlineHtml = `<div style="${style} font-size: 0.85rem; margin-bottom: 0.5rem;">📅 ${formattedDate}${isOverdue ? ' (überfällig!)' : ''}</div>`;
+                }
+                
+                card.innerHTML = `
+                    ${deadlineHtml}
+                    <h3>${escapeHtml(note.title)}</h3>
+                    <p>${escapeHtml(note.content.substring(0, 100))}${note.content.length > 100 ? '...' : ''}</p>
+                    <div class="note-meta">
+                        <span class="priority-badge ${note.priority}" style="font-size: 0.85rem; padding: 0.4rem 0.9rem;">${prioIcons[note.priority]}</span>
+                        <button class="btn btn-danger btn-small" onclick="event.stopPropagation(); deleteNoteConfirm(${note.id})" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">🗑️ Löschen</button>
+                    </div>
+                `;
+                gridEl.appendChild(card);
+            });
+            emptyEl.style.display = 'none';
+        } else {
+            emptyEl.style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Error loading notes:', error);
+    }
+}
+
+function showNoteOptions(id) {
+    if (confirm('Notiz löschen?')) {
+        deleteNote(id);
+    }
+}
+
+async function createNote() {
+    const title = document.getElementById('itemTitle').value;
+    const content = document.getElementById('itemContent').value;
+    const priority = document.getElementById('itemPriority').value;
+    const deadline = document.getElementById('itemDeadline').value;
+    const inCalendar = document.getElementById('itemInCalendar').checked;
+
+    if (!title || !content) {
+        alert('Bitte Titel und Inhalt eingeben');
+        return;
+    }
+
+    try {
+        const noteData = {
+            title,
+            content,
+            priority,
+            in_calendar: inCalendar
+        };
+        
+        // Add deadline only if set
+        if (deadline) {
+            noteData.deadline = deadline;
+        }
+        
+        await apiCall('/notes/', {
+            method: 'POST',
+            body: JSON.stringify(noteData)
+        });
+        
+        // If "in calendar" is checked, also create calendar event
+        if (inCalendar && deadline) {
             try {
-                // Make API request
-                const response = await fetch(`${API_BASE}/auth/login`, {
+                await apiCall('/calendar/', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
                     body: JSON.stringify({
-                        username: username,
-                        password: password
+                        title: `📝 ${title}`,
+                        date: deadline,
+                        description: content.substring(0, 200),
+                        priority
                     })
                 });
-
-                const data = await response.json();
-
-                if (response.ok && data.access_token) {
-                    // Login successful!
-                    localStorage.setItem('token', data.access_token);
-                    
-                    // Show success
-                    loginBtn.innerHTML = '✓ Erfolgreich!';
-                    loginBtn.style.background = 'var(--success)';
-                    
-                    // Redirect after short delay
-                    setTimeout(() => {
-                        window.location.href = '/app.html';
-                    }, 500);
-                } else {
-                    // Login failed
-                    const errorMsg = data.detail || 'Anmeldung fehlgeschlagen';
-                    showError(errorMsg);
-                    resetButton();
-                }
             } catch (error) {
-                console.error('Login error:', error);
-                showError('Verbindungsfehler. Bitte versuche es erneut.');
-                resetButton();
+                console.log('Calendar event creation failed, but note created');
+            }
+        }
+        
+        loadNotes();
+    } catch (error) {
+        alert('Fehler beim Erstellen');
+    }
+}
+
+function deleteNoteConfirm(id) {
+    // Custom confirm dialog
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 3000;';
+    modal.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 16px; max-width: 400px; text-align: center;">
+            <h3 style="margin-bottom: 1rem; color: var(--text);">Notiz löschen?</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-light);">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="this.closest('div').parentElement.parentElement.remove()">Abbrechen</button>
+                <button class="btn btn-danger" style="flex: 1;" onclick="deleteNote(${id}); this.closest('div').parentElement.parentElement.remove()">Löschen</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+async function deleteNote(id) {
+    try {
+        await apiCall(`/notes/${id}`, { method: 'DELETE' });
+        loadNotes();
+    } catch (error) {
+        alert('Fehler beim Löschen');
+    }
+}
+
+// ========== CALENDAR ==========
+async function loadEvents() {
+    try {
+        events = await apiCall('/calendar/') || [];
+        renderEventsList();
+    } catch (error) {
+        console.error('Error loading events:', error);
+    }
+}
+
+function renderCalendar() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    
+    const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+    
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const grid = document.getElementById('calendarGrid');
+    grid.innerHTML = '';
+    
+    // Day headers
+    ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].forEach(day => {
+        const header = document.createElement('div');
+        header.className = 'calendar-day-header';
+        header.textContent = day;
+        grid.appendChild(header);
+    });
+    
+    // Empty cells
+    const startDay = firstDay === 0 ? 6 : firstDay - 1;
+    for (let i = 0; i < startDay; i++) {
+        grid.appendChild(document.createElement('div'));
+    }
+    
+    // Days
+    const today = new Date();
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayEl = document.createElement('div');
+        dayEl.className = 'calendar-day';
+        
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        
+        // Get events and notes for this day
+        const dayEvents = events.filter(e => e.date === dateStr);
+        
+        // Load notes with deadlines (async - will be loaded from API)
+        apiCall('/notes/').then(notes => {
+            if (!notes) return;
+            const dayNotes = notes.filter(n => n.deadline === dateStr);
+            
+            if (dayNotes.length > 0 || dayEvents.length > 0) {
+                // Build content
+                let content = `<div class="calendar-day-number">${day}</div>`;
+                content += '<div class="calendar-day-notes">';
+                
+                // Add notes with priority colors
+                dayNotes.forEach(note => {
+                    content += `<div class="calendar-note-badge ${note.priority}">${note.title.substring(0, 10)}</div>`;
+                });
+                
+                dayEl.innerHTML = content + '</div>';
+            } else {
+                dayEl.innerHTML = `<div class="calendar-day-number">${day}</div>`;
             }
         });
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.add('active');
+        
+        dayEl.innerHTML = `<div class="calendar-day-number">${day}</div>`;
+        
+        if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) {
+            dayEl.classList.add('today');
         }
-
-        function hideError() {
-            errorMessage.classList.remove('active');
+        
+        grid.appendChild(dayEl);
+    }
+    
+    // Reload after notes are fetched
+    apiCall('/notes/').then(notes => {
+        if (!notes) return;
+        
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dayNotes = notes.filter(n => n.deadline === dateStr);
+            const dayEvents = events.filter(e => e.date === dateStr);
+            
+            const dayIndex = startDay + day - 1 + 7; // +7 for headers
+            const dayEl = grid.children[dayIndex];
+            
+            if (dayEl && (dayNotes.length > 0 || dayEvents.length > 0)) {
+                let content = `<div class="calendar-day-number">${day}</div>`;
+                content += '<div class="calendar-day-notes">';
+                
+                dayNotes.slice(0, 2).forEach(note => {
+                    content += `<div class="calendar-note-badge ${note.priority}">${note.title.substring(0, 10)}</div>`;
+                });
+                
+                content += '</div>';
+                dayEl.innerHTML = content;
+            }
         }
+    });
+}
 
-        function resetButton() {
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = 'Anmelden';
+function renderEventsList() {
+    const listEl = document.getElementById('events-list');
+    
+    if (!listEl) return;
+    
+    listEl.innerHTML = '';
+    
+    if (events && events.length > 0) {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0);
+        const upcoming = events.filter(e => new Date(e.date) >= now).sort((a, b) => new Date(a.date) - new Date(b.date)).slice(0, 5);
+        
+        if (upcoming.length > 0) {
+            upcoming.forEach(event => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 1rem; background: var(--bg); border-radius: 8px; margin-bottom: 0.75rem;';
+                item.innerHTML = `
+                    <h4 style="margin-bottom: 0.25rem;">${escapeHtml(event.title)}</h4>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">${new Date(event.date).toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    ${event.description ? `<p style="margin-top: 0.5rem; font-size: 0.9rem;">${escapeHtml(event.description)}</p>` : ''}
+                `;
+                listEl.appendChild(item);
+            });
+        } else {
+            listEl.innerHTML = '<p style="text-align: center; color: var(--text-light);">Keine anstehenden Termine</p>';
         }
+    } else {
+        listEl.innerHTML = '<p style="text-align: center; color: var(--text-light);">Keine Termine</p>';
+    }
+}
 
-        // Auto-focus username field
-        document.getElementById('username').focus();
+function previousMonth() {
+    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1);
+    renderCalendar();
+}
+
+function nextMonth() {
+    currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1);
+    renderCalendar();
+}
+
+async function createEvent() {
+    const title = document.getElementById('itemTitle').value;
+    const date = document.getElementById('itemDate').value;
+    const description = document.getElementById('itemContent').value;
+
+    if (!title || !date) {
+        alert('Bitte Titel und Datum eingeben');
+        return;
+    }
+
+    try {
+        await apiCall('/calendar/', {
+            method: 'POST',
+            body: JSON.stringify({ title, date, description, priority: 'medium' })
+        });
+        loadEvents();
+        renderCalendar();
+    } catch (error) {
+        alert('Fehler beim Erstellen');
+    }
+}
+
+function showCalDAVInfo() {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 3000; padding: 1rem;';
+    modal.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 16px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="color: var(--text); margin: 0;">📱 iOS CalDAV Sync</h3>
+                <button onclick="this.closest('div').parentElement.parentElement.remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light);">&times;</button>
+            </div>
+            
+            <div style="background: var(--bg); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                <h4 style="margin-bottom: 0.5rem; color: var(--text);">Einstellungen → Kalender → Accounts</h4>
+                <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">Account hinzufügen → Andere → CalDAV-Account hinzufügen</p>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">Server:</strong>
+                    <code style="background: white; padding: 0.25rem 0.5rem; border-radius: 4px; display: block; margin-top: 0.25rem; font-size: 0.9rem;">polypaul.de</code>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">Benutzername:</strong>
+                    <code style="background: white; padding: 0.25rem 0.5rem; border-radius: 4px; display: block; margin-top: 0.25rem; font-size: 0.9rem;">paul</code>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">Passwort:</strong>
+                    <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.25rem;">Dein PolyHub Passwort</p>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">Port:</strong>
+                    <code style="background: white; padding: 0.25rem 0.5rem; border-radius: 4px; display: inline-block; margin-top: 0.25rem; font-size: 0.9rem;">443</code>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">SSL:</strong>
+                    <span style="color: var(--success); font-weight: 600;">✓ AN</span>
+                </div>
+                
+                <div style="margin-bottom: 0.75rem;">
+                    <strong style="color: var(--text);">Account-URL (optional):</strong>
+                    <code style="background: white; padding: 0.25rem 0.5rem; border-radius: 4px; display: block; margin-top: 0.25rem; font-size: 0.85rem;">https://polypaul.de/radicale/paul/</code>
+                </div>
+            </div>
+            
+            <div style="background: #e0f2fe; padding: 1rem; border-radius: 8px; border-left: 4px solid var(--primary);">
+                <strong style="color: var(--primary);">💡 Tipp:</strong>
+                <p style="color: var(--text); font-size: 0.9rem; margin-top: 0.5rem;">Nach dem Hinzufügen synchronisiert iOS automatisch alle Termine!</p>
+            </div>
+            
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;" onclick="this.closest('div').parentElement.parentElement.remove()">Verstanden</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+// ========== FINANCE ==========
+async function loadFinanceSummary() {
+    try {
+        // Get current month range
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const firstDay = new Date(year, month, 1).toISOString().split('T')[0];
+        const lastDay = new Date(year, month + 1, 0).toISOString().split('T')[0];
+        
+        const summary = await apiCall(`/finance/summary?start_date=${firstDay}&end_date=${lastDay}`);
+        const summaryEl = document.getElementById('finance-summary');
+        
+        const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+        const currentMonth = monthNames[month];
+        
+        if (summary) {
+            summaryEl.innerHTML = `
+                <div class="finance-card income">
+                    <h4>Einnahmen ${currentMonth}</h4>
+                    <div class="amount">+${parseFloat(summary.total_income).toFixed(2)} €</div>
+                </div>
+                <div class="finance-card expense">
+                    <h4>Ausgaben ${currentMonth}</h4>
+                    <div class="amount">-${parseFloat(summary.total_expense).toFixed(2)} €</div>
+                </div>
+                <div class="finance-card balance">
+                    <h4>Bilanz ${currentMonth}</h4>
+                    <div class="amount">${parseFloat(summary.balance).toFixed(2)} €</div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error loading summary:', error);
+    }
+}
+
+async function loadTransactions() {
+    try {
+        const transactions = await apiCall('/finance/transactions?limit=20');
+        const listEl = document.getElementById('transactions-list');
+        listEl.innerHTML = '';
+
+        if (transactions && transactions.length > 0) {
+            transactions.forEach(t => {
+                const item = document.createElement('div');
+                const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
+                const sign = t.type === 'income' ? '+' : '-';
+                const recurringBadge = t.is_recurring ? '<span style="background: var(--primary); color: white; padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.75rem; margin-left: 0.5rem;">🔄 Dauerauftrag</span>' : '';
+                
+                item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--bg); border-radius: 8px; margin-bottom: 0.75rem;';
+                item.innerHTML = `
+                    <div>
+                        <h4>${escapeHtml(t.title)}${recurringBadge}</h4>
+                        <p style="color: var(--text-light); font-size: 0.85rem;">${new Date(t.date).toLocaleDateString('de-DE')}</p>
+                    </div>
+                    <div style="text-align: right; display: flex; align-items: center; gap: 1rem;">
+                        <div style="color: ${color}; font-weight: 700; font-size: 1.25rem;">${sign}${parseFloat(t.amount).toFixed(2)} €</div>
+                        <button class="btn btn-danger btn-small" onclick="deleteTransactionConfirm(${t.id})" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">🗑️</button>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        } else {
+            listEl.innerHTML = '<p style="text-align: center; color: var(--text-light);">Keine Transaktionen</p>';
+        }
+    } catch (error) {
+        console.error('Error loading transactions:', error);
+    }
+}
+
+function deleteTransactionConfirm(id) {
+    const modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 3000;';
+    modal.innerHTML = `
+        <div style="background: white; padding: 2rem; border-radius: 16px; max-width: 400px; text-align: center;">
+            <h3 style="margin-bottom: 1rem; color: var(--text);">Transaktion löschen?</h3>
+            <p style="margin-bottom: 1.5rem; color: var(--text-light);">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-secondary" style="flex: 1;" onclick="this.closest('div').parentElement.parentElement.remove()">Abbrechen</button>
+                <button class="btn btn-danger" style="flex: 1;" onclick="deleteTransaction(${id}); this.closest('div').parentElement.parentElement.remove()">Löschen</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+async function deleteTransaction(id) {
+    try {
+        await apiCall(`/finance/transactions/${id}`, { method: 'DELETE' });
+        loadTransactions();
+        loadFinanceSummary();
+    } catch (error) {
+        alert('Fehler beim Löschen');
+    }
+}
+
+async function createTransaction() {
+    const title = document.getElementById('itemTitle').value;
+    const amount = document.getElementById('itemAmount').value;
+    const type = document.getElementById('itemType').value;
+    const date = document.getElementById('itemDate').value;
+    const isRecurring = document.getElementById('itemRecurring').checked;
+    const recurringInterval = document.getElementById('itemRecurringInterval').value;
+
+    if (!title || !amount || !date) {
+        alert('Bitte alle Felder ausfüllen');
+        return;
+    }
+
+    try {
+        const transactionData = {
+            title,
+            amount: parseFloat(amount),
+            type,
+            date,
+            is_recurring: isRecurring,
+            recurring_interval: isRecurring ? recurringInterval : null
+        };
+        
+        await apiCall('/finance/transactions', {
+            method: 'POST',
+            body: JSON.stringify(transactionData)
+        });
+        loadTransactions();
+        loadFinanceSummary();
+    } catch (error) {
+        alert('Fehler beim Erstellen');
+    }
+}
+
+// ========== HELPERS ==========
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
     </script>
 </body>
 </html>
