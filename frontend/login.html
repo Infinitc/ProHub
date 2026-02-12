@@ -1,10 +1,9 @@
-Login secure · HTML
 <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PolyHub - Login</title>
+    <title>ProHub - Login</title>
     <style>
         * {
             margin: 0;
@@ -277,71 +276,62 @@ Login secure · HTML
             }
         }
 
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value;
-    
-    console.log('🔵 LOGIN START:', username);
-    
-    if (!username || !password) {
-        showError('Bitte Benutzername und Passwort eingeben');
-        return;
-    }
+        // Login form handler
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showError('Bitte Benutzername und Passwort eingeben');
+                return;
+            }
 
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = '<span class="loading-spinner"></span> Anmeldung läuft...';
-    hideError();
+            // Disable button and show loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading-spinner"></span> Anmeldung läuft...';
+            hideError();
 
-    try {
-        console.log('🔵 Fetching login...');
-        
-        const response = await fetch(`${API_BASE}/auth/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
+            try {
+                // Make API request
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.access_token) {
+                    // Login successful!
+                    localStorage.setItem('token', data.access_token);
+                    
+                    // Show success
+                    loginBtn.innerHTML = '✓ Erfolgreich!';
+                    loginBtn.style.background = 'var(--success)';
+                    
+                    // Redirect after short delay
+                    setTimeout(() => {
+                        window.location.href = '/app.html';
+                    }, 500);
+                } else {
+                    // Login failed
+                    const errorMsg = data.detail || 'Anmeldung fehlgeschlagen';
+                    showError(errorMsg);
+                    resetButton();
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Verbindungsfehler. Bitte versuche es erneut.');
+                resetButton();
+            }
         });
-
-        console.log('🔵 Response status:', response.status);
-        console.log('🔵 Response OK:', response.ok);
-
-        const data = await response.json();
-        console.log('🔵 Response data:', data);
-
-        if (response.ok && data.access_token) {
-            console.log('✅ Login erfolgreich! Token:', data.access_token.substring(0, 20) + '...');
-            
-            // Token speichern
-            localStorage.setItem('token', data.access_token);
-            console.log('✅ Token gespeichert!');
-            
-            // Verify
-            const savedToken = localStorage.getItem('token');
-            console.log('✅ Token verify:', savedToken ? 'GEFUNDEN' : 'NICHT GEFUNDEN');
-            
-            // Success Anzeige
-            loginBtn.innerHTML = '✓ Erfolgreich!';
-            loginBtn.style.background = '#10B981';
-            
-            console.log('🔵 Redirect in 800ms...');
-            
-            // Weiterleitung
-            setTimeout(() => {
-                console.log('🔵 REDIRECT JETZT!');
-                window.location.href = '/app.html';
-            }, 800);
-        } else {
-            console.log('❌ Login fehlgeschlagen:', data);
-            showError(data.detail || 'Anmeldung fehlgeschlagen');
-            resetButton();
-        }
-    } catch (error) {
-        console.error('❌ Login error:', error);
-        showError('Verbindungsfehler. Bitte versuche es erneut.');
-        resetButton();
-    }
-});
 
         function showError(message) {
             errorMessage.textContent = message;
