@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import List, Optional
@@ -33,12 +33,49 @@ def create_transaction(t: schemas.TransactionCreate, db: Session = Depends(get_d
 def get_transactions(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), cu: models.User = Depends(get_current_user)):
     return db.query(models.Transaction).filter(models.Transaction.user_id == cu.id).order_by(models.Transaction.date.desc()).offset(skip).limit(limit).all()
 
-@router.get("/summary", response_model=schemas.FinanceSummary)
-def get_summary(db: Session = Depends(get_db), cu: models.User = Depends(get_current_user)):
-    q = db.query(models.Transaction).filter(models.Transaction.user_id == cu.id)
-    income = q.filter(models.Transaction.type == "income").with_entities(func.sum(models.Transaction.amount)).scalar() or Decimal("0.00")
-    expense = q.filter(models.Transaction.type == "expense").with_entities(func.sum(models.Transaction.amount)).scalar() or Decimal("0.00")
-    return {"total_income": income, "total_expense": expense, "balance": income - expense, "by_category": []}
+@router.get("/summary")
+async def get_summary(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    query = db.query(models.Transaction).filter(models.Transaction.user_id == current_user.id)
+    
+    if start_date:
+        query = query.filter(models.Transaction.date >= start_date)
+    if end_date:
+        query = query.filter(models.Transaction.date <= end_date)
+    
+    transactions = query.all()
+    
+    # WICHTIG: Berechnung hinzufügen!
+    total_income = sum(float(t.amount) for t in transactions if t.type == "income")
+    total_expense = sum(float(t.amount) for t in transactions if t.type == "expense")
+    
+    return {
+        "total_income": total_income,
+        "total_expense": total_expense,
+        "balance": total_income - total_expense
+    }
+
+@router.delete("/transactions/{transaction_id}", status_code=204)
+async def delete_transaction(
+    transaction_id: int,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    transaction = db.query(models.Transaction).filter(
+        models.Transaction.id == transaction_id,
+        models.Transaction.user_id == current_user.id
+    ).first()
+    
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    
+    db.delete(transaction)
+    db.commit()
+    return Response(status_code=204)
 
 @router.post("/budgets", response_model=schemas.BudgetResponse, status_code=status.HTTP_201_CREATED)
 def create_budget(b: schemas.BudgetCreate, db: Session = Depends(get_db), cu: models.User = Depends(get_current_user)):
