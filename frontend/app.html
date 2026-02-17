@@ -263,7 +263,7 @@
             <button class="theme-toggle" onclick="toggleTheme()" title="Hell/Dunkel">
                 <span class="theme-toggle-icon-moon">🌙</span>
                 <span class="theme-toggle-icon-sun">☀️</span>
-                <div class="theme-toggle-thumb"></div>
+                <div class="theme-toggle-thumb">🌙</div>
             </button>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
@@ -326,23 +326,11 @@
         <div id="finance" class="section">
             <div id="finance-summary" class="finance-summary"></div>
             <div class="card">
-                <div class="finance-tabs">
-                    <button class="finance-tab active" id="tab-transactions" onclick="switchTab('transactions')">💳 Transaktionen</button>
-                    <button class="finance-tab tab-savings" id="tab-savings" onclick="switchTab('savings')">🏦 Sparen</button>
+                <div class="card-header">
+                    <h2>Letzte Transaktionen</h2>
+                    <span style="font-size:0.8rem;color:var(--text-light);">⠿ ziehen zum Sortieren</span>
                 </div>
-                <!-- Transactions -->
-                <div id="panel-transactions">
-                    <div class="card-header">
-                        <h2>Letzte Transaktionen</h2>
-                        <span style="font-size:0.8rem;color:var(--text-light);">⠿ ziehen zum Sortieren</span>
-                    </div>
-                    <ul class="transaction-list" id="transactions-list"></ul>
-                </div>
-                <!-- Savings -->
-                <div id="panel-savings" style="display:none;">
-                    <div class="card-header"><h2>Meine Sparziele</h2></div>
-                    <div id="savings-list"></div>
-                </div>
+                <ul class="transaction-list" id="transactions-list"></ul>
             </div>
         </div>
 
@@ -402,8 +390,9 @@
             <div class="form-group" id="typeGroup" style="display:none;">
                 <label>Typ</label>
                 <select id="itemType">
-                    <option value="expense">Ausgabe</option>
-                    <option value="income">Einnahme</option>
+                    <option value="expense">📤 Ausgabe</option>
+                    <option value="income">📥 Einnahme</option>
+                    <option value="savings">💰 Sparen</option>
                 </select>
             </div>
             <div class="form-group" id="recurringGroup" style="display:none;">
@@ -419,19 +408,6 @@
                         <option value="yearly">Jährlich</option>
                     </select>
                 </div>
-            </div>
-            <!-- Savings fields -->
-            <div class="form-group" id="savingsTargetGroup" style="display:none;">
-                <label>Sparziel (€)</label>
-                <input type="number" step="0.01" id="itemSavingsTarget" placeholder="z.B. 5000.00">
-            </div>
-            <div class="form-group" id="savingsCurrentGroup" style="display:none;">
-                <label>Bereits gespart (€)</label>
-                <input type="number" step="0.01" id="itemSavingsCurrent" placeholder="0.00" value="0">
-            </div>
-            <div class="form-group" id="savingsProviderGroup" style="display:none;">
-                <label>Anbieter / Konto</label>
-                <input type="text" id="itemSavingsProvider" placeholder="z.B. Trade Republic, Bausparkasse...">
             </div>
             <div style="display:flex;gap:0.75rem;margin-top:1.5rem;">
                 <button class="btn btn-secondary" style="flex:1;" onclick="closeModal()">Abbrechen</button>
@@ -465,7 +441,6 @@ let token = null;
 let currentSection = 'notes';
 let currentMonth = new Date();
 let events = [];
-let currentActiveTab = 'transactions';
 let dragSrcEl = null;
 
 // ========== INIT ==========
@@ -531,29 +506,20 @@ function showSection(sectionId, btn) {
     if (btn) btn.classList.add('active');
     if (sectionId === 'notes') loadNotes();
     if (sectionId === 'calendar') { loadEvents(); renderCalendar(); }
-    if (sectionId === 'finance') { loadTransactions(); loadFinanceSummary(); loadSavings(); }
+    if (sectionId === 'finance') { loadTransactions(); loadFinanceSummary(); }
 }
 
-// ========== FINANCE TABS ==========
-function switchTab(tab) {
-    currentActiveTab = tab;
-    document.getElementById('panel-transactions').style.display = tab === 'transactions' ? 'block' : 'none';
-    document.getElementById('panel-savings').style.display = tab === 'savings' ? 'block' : 'none';
-    document.getElementById('tab-transactions').classList.toggle('active', tab === 'transactions');
-    document.getElementById('tab-savings').classList.toggle('active', tab === 'savings');
-}
+// ========== FINANCE TABS - REMOVED (single tab now) ==========
 
 // ========== MODAL ==========
 function openCreateModal() {
-    // Reset all fields
-    ['itemTitle','itemContent','itemAmount','itemSavingsTarget','itemSavingsProvider'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('itemSavingsCurrent').value = '0';
+    ['itemTitle','itemContent','itemAmount'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('itemPriority').value = 'medium';
     document.getElementById('itemRecurring').checked = false;
     document.getElementById('itemInCalendar').checked = false;
     document.getElementById('recurringIntervalGroup').style.display = 'none';
 
-    const allGroups = ['contentGroup','priorityGroup','deadlineGroup','calendarCheckGroup','dateGroup','amountGroup','typeGroup','recurringGroup','savingsTargetGroup','savingsCurrentGroup','savingsProviderGroup'];
+    const allGroups = ['contentGroup','priorityGroup','deadlineGroup','calendarCheckGroup','dateGroup','amountGroup','typeGroup','recurringGroup'];
     allGroups.forEach(id => document.getElementById(id).style.display = 'none');
 
     if (currentSection === 'notes') {
@@ -565,14 +531,9 @@ function openCreateModal() {
         ['contentGroup','dateGroup'].forEach(id => document.getElementById(id).style.display = 'block');
         document.getElementById('itemDate').value = new Date().toISOString().split('T')[0];
     } else if (currentSection === 'finance') {
-        if (currentActiveTab === 'savings') {
-            document.getElementById('modalTitle').textContent = 'Neues Sparziel';
-            ['savingsTargetGroup','savingsCurrentGroup','savingsProviderGroup'].forEach(id => document.getElementById(id).style.display = 'block');
-        } else {
-            document.getElementById('modalTitle').textContent = 'Neue Transaktion';
-            ['dateGroup','amountGroup','typeGroup','recurringGroup'].forEach(id => document.getElementById(id).style.display = 'block');
-            document.getElementById('itemDate').value = new Date().toISOString().split('T')[0];
-        }
+        document.getElementById('modalTitle').textContent = 'Neue Transaktion';
+        ['dateGroup','amountGroup','typeGroup','recurringGroup'].forEach(id => document.getElementById(id).style.display = 'block');
+        document.getElementById('itemDate').value = new Date().toISOString().split('T')[0];
     }
     document.getElementById('createModal').classList.add('active');
 }
@@ -585,7 +546,6 @@ function toggleRecurringInterval() {
 async function submitModal() {
     if (currentSection === 'notes') await createNote();
     else if (currentSection === 'calendar') await createEvent();
-    else if (currentSection === 'finance' && currentActiveTab === 'savings') await createSavingsGoal();
     else if (currentSection === 'finance') await createTransaction();
     closeModal();
 }
@@ -790,28 +750,23 @@ async function loadFinanceSummary() {
         const now = new Date();
         const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
         const lastDay = new Date(now.getFullYear(), now.getMonth()+1, 0).toISOString().split('T')[0];
-        const summary = await apiCall(`/finance/summary?start_date=${firstDay}&end_date=${lastDay}`);
+        const [summary, allTransactions] = await Promise.all([
+            apiCall(`/finance/summary?start_date=${firstDay}&end_date=${lastDay}`),
+            apiCall('/finance/transactions?limit=500')
+        ]);
         const monthName = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'][now.getMonth()];
         if (summary) {
+            // Calculate total savings from ALL transactions of type "savings"
+            const totalSaved = allTransactions
+                ? allTransactions.filter(t => t.type === 'savings').reduce((s, t) => s + parseFloat(t.amount || 0), 0)
+                : 0;
             document.getElementById('finance-summary').innerHTML = `
                 <div class="finance-card income"><h4>Einnahmen ${monthName}</h4><div class="amount">+${parseFloat(summary.total_income).toFixed(2)} €</div></div>
                 <div class="finance-card expense"><h4>Ausgaben ${monthName}</h4><div class="amount">-${parseFloat(summary.total_expense).toFixed(2)} €</div></div>
                 <div class="finance-card balance"><h4>Bilanz ${monthName}</h4><div class="amount">${parseFloat(summary.balance).toFixed(2)} €</div></div>
-                <div class="finance-card savings-total"><h4>💰 Gespart gesamt</h4><div class="amount" id="totalSaved">—</div></div>`;
-            loadSavingsTotalAmount();
+                <div class="finance-card savings-total"><h4>💰 Gespart gesamt</h4><div class="amount">${totalSaved.toFixed(2)} €</div></div>`;
         }
     } catch(e) { console.error(e); }
-}
-
-async function loadSavingsTotalAmount() {
-    try {
-        const savings = await apiCall('/finance/savings');
-        if (savings) {
-            const total = savings.reduce((s, g) => s + parseFloat(g.current_amount || 0), 0);
-            const el = document.getElementById('totalSaved');
-            if (el) el.textContent = `${total.toFixed(2)} €`;
-        }
-    } catch(e) {}
 }
 
 // ========== TRANSACTIONS (DRAGGABLE) ==========
@@ -836,14 +791,22 @@ function buildTransactionItem(t, idx) {
     li.className = 'transaction-item';
     li.draggable = true;
     li.dataset.id = t.id;
-    const color = t.type === 'income' ? 'var(--success)' : 'var(--danger)';
-    const sign = t.type === 'income' ? '+' : '-';
+
+    let color, sign, typeLabel;
+    if (t.type === 'income') {
+        color = 'var(--success)'; sign = '+'; typeLabel = '';
+    } else if (t.type === 'savings') {
+        color = 'var(--savings)'; sign = ''; typeLabel = '<span style="background:var(--savings);color:white;padding:0.2rem 0.5rem;border-radius:12px;font-size:0.75rem;margin-left:0.5rem;">💰 Sparen</span>';
+    } else {
+        color = 'var(--danger)'; sign = '-'; typeLabel = '';
+    }
+
     const badge = t.is_recurring ? '<span style="background:var(--primary);color:white;padding:0.2rem 0.5rem;border-radius:12px;font-size:0.75rem;margin-left:0.5rem;">🔄</span>' : '';
     li.innerHTML = `
         <div style="display:flex;align-items:center;min-width:0;">
             <span class="drag-handle">⠿</span>
             <div style="min-width:0;">
-                <h4 style="color:var(--text);">${escapeHtml(t.title)}${badge}</h4>
+                <h4 style="color:var(--text);">${escapeHtml(t.title)}${typeLabel}${badge}</h4>
                 <p style="color:var(--text-light);font-size:0.85rem;">${new Date(t.date).toLocaleDateString('de-DE')}</p>
             </div>
         </div>
@@ -851,19 +814,16 @@ function buildTransactionItem(t, idx) {
             <div style="color:${color};font-weight:700;font-size:1.25rem;">${sign}${parseFloat(t.amount).toFixed(2)} €</div>
             <button class="btn btn-danger btn-small" onclick="deleteTransactionConfirm(${t.id})" style="padding:0.35rem 0.75rem;font-size:0.8rem;">🗑️</button>
         </div>`;
-    // Drag events
     li.addEventListener('dragstart', e => { dragSrcEl = li; li.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
     li.addEventListener('dragend', () => { li.classList.remove('dragging'); document.querySelectorAll('.transaction-item').forEach(el => el.classList.remove('drag-over')); dragSrcEl = null; });
     li.addEventListener('dragover', e => { e.preventDefault(); if (dragSrcEl && dragSrcEl !== li) li.classList.add('drag-over'); });
     li.addEventListener('dragleave', () => li.classList.remove('drag-over'));
     li.addEventListener('drop', e => {
-        e.preventDefault();
-        li.classList.remove('drag-over');
+        e.preventDefault(); li.classList.remove('drag-over');
         if (dragSrcEl && dragSrcEl !== li) {
             const list = li.parentElement;
             const items = [...list.children];
-            const srcIdx = items.indexOf(dragSrcEl);
-            const tgtIdx = items.indexOf(li);
+            const srcIdx = items.indexOf(dragSrcEl), tgtIdx = items.indexOf(li);
             if (srcIdx < tgtIdx) list.insertBefore(dragSrcEl, li.nextSibling);
             else list.insertBefore(dragSrcEl, li);
         }
@@ -891,59 +851,6 @@ async function createTransaction() {
         await apiCall('/finance/transactions', { method: 'POST', body: JSON.stringify({ title, amount: parseFloat(amount), type, date, is_recurring: isRecurring, recurring_interval: isRecurring ? recurringInterval : null }) });
         loadTransactions(); loadFinanceSummary();
     } catch(e) { alert('Fehler beim Erstellen'); }
-}
-
-// ========== SAVINGS GOALS ==========
-async function loadSavings() {
-    try {
-        const savings = await apiCall('/finance/savings');
-        const listEl = document.getElementById('savings-list');
-        listEl.innerHTML = '';
-        if (savings && savings.length > 0) {
-            savings.forEach(s => {
-                const target = parseFloat(s.target_amount || 0);
-                const current = parseFloat(s.current_amount || 0);
-                const pct = target > 0 ? Math.min((current / target) * 100, 100) : 0;
-                const card = document.createElement('div');
-                card.className = 'savings-goal-card';
-                card.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
-                        <div>
-                            <h4>${escapeHtml(s.title)}</h4>
-                            ${s.description ? `<div class="savings-provider">🏦 ${escapeHtml(s.description)}</div>` : ''}
-                        </div>
-                        <button class="btn btn-danger btn-small" onclick="deleteSavingsConfirm(${s.id})" style="padding:0.35rem 0.75rem;font-size:0.8rem;flex-shrink:0;margin-left:0.5rem;">🗑️</button>
-                    </div>
-                    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-                    <div class="progress-labels">
-                        <span class="saved">${current.toFixed(2)} € gespart</span>
-                        <span>${pct.toFixed(0)}% · Ziel: ${target.toFixed(2)} €</span>
-                    </div>`;
-                listEl.appendChild(card);
-            });
-        } else {
-            listEl.innerHTML = `<div class="empty-state"><div class="empty-state-icon">🏦</div><h3>Keine Sparziele</h3><p>Klicke auf + um dein erstes Sparziel anzulegen</p></div>`;
-        }
-    } catch(e) { console.error(e); }
-}
-
-async function createSavingsGoal() {
-    const title = document.getElementById('itemTitle').value;
-    const target = parseFloat(document.getElementById('itemSavingsTarget').value);
-    const current = parseFloat(document.getElementById('itemSavingsCurrent').value || 0);
-    const provider = document.getElementById('itemSavingsProvider').value;
-    if (!title || !target) { alert('Bitte Titel und Sparziel eingeben'); return; }
-    try {
-        await apiCall('/finance/savings', { method: 'POST', body: JSON.stringify({ title, target_amount: target, current_amount: current, description: provider }) });
-        loadSavings(); loadFinanceSummary();
-    } catch(e) { alert('Fehler beim Erstellen'); }
-}
-
-function deleteSavingsConfirm(id) {
-    showConfirmModal('Sparziel löschen?', 'Diese Aktion kann nicht rückgängig gemacht werden.', async () => {
-        try { await apiCall(`/finance/savings/${id}`, { method: 'DELETE' }); loadSavings(); loadFinanceSummary(); }
-        catch(e) { alert('Fehler beim Löschen'); }
-    });
 }
 
 // ========== CONFIRM MODAL HELPER ==========
