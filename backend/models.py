@@ -184,4 +184,4 @@ class SavingsGoal(Base):
     target_amount = Column(Numeric(10, 2), default=0)
     current_amount = Column(Numeric(10, 2), default=0)
     description = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(timezone=True), server_default=func.now())
