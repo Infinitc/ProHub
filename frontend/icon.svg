@@ -1,0 +1,38 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="polyGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hexagon Background -->
+  <polygon points="128,20 220,74 220,182 128,236 36,182 36,74"
+           fill="url(#polyGradient)"
+           stroke="#ffffff"
+           stroke-width="6"
+           stroke-linejoin="round"/>
+
+  <!-- Stylized P -->
+  <g fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round">
+    
+    <!-- Vertical stem -->
+    <line x1="95" y1="80" x2="95" y2="176"/>
+
+    <!-- Top curve (Finances circle part) -->
+    <path d="M95 80 Q160 80 160 115 Q160 150 95 150"/>
+    
+  </g>
+
+  <!-- Finance Coin -->
+  <circle cx="150" cy="115" r="12" fill="#ffffff" opacity="0.9"/>
+
+  <!-- Calendar Grid -->
+  <rect x="105" y="160" width="50" height="28" rx="4"
+        fill="none" stroke="#ffffff" stroke-width="4"/>
+
+  <line x1="105" y1="172" x2="155" y2="172" stroke="#ffffff" stroke-width="3"/>
+  <line x1="120" y1="160" x2="120" y2="188" stroke="#ffffff" stroke-width="2"/>
+  <line x1="140" y1="160" x2="140" y2="188" stroke="#ffffff" stroke-width="2"/>
+
+</svg>
