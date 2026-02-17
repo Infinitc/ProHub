@@ -175,3 +175,13 @@ class Email(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     account = relationship("MailAccount", back_populates="emails")
+
+class SavingsGoal(Base):
+    __tablename__ = "savings_goals"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)
+    target_amount = Column(Numeric(10, 2), default=0)
+    current_amount = Column(Numeric(10, 2), default=0)
+    description = Column(String, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
