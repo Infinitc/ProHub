@@ -1,15 +1,11 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PolyHub - Login</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #6366f1;
@@ -24,6 +20,14 @@
             --danger: #ef4444;
         }
 
+        [data-theme="dark"] {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f1f5f9;
+            --text-light: #94a3b8;
+            --border: #334155;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -36,290 +40,156 @@
             overflow: hidden;
         }
 
-        /* Animated Background */
         body::before {
             content: '';
             position: absolute;
-            width: 200%;
-            height: 200%;
+            width: 200%; height: 200%;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
             background-size: 50px 50px;
             animation: moveBackground 20s linear infinite;
         }
 
         @keyframes moveBackground {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+            0% { transform: translate(0,0); }
+            100% { transform: translate(50px,50px); }
         }
 
+        /* Theme toggle for login page */
+        .login-theme-toggle {
+            position: fixed;
+            top: 1.5rem; right: 1.5rem;
+            z-index: 10;
+            width: 52px; height: 28px;
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .login-theme-thumb {
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 20px; height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+        }
+        [data-theme="dark"] .login-theme-thumb { transform: translateX(24px); }
+        .login-theme-sun { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+        .login-theme-moon { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); font-size: 11px; }
+
         .login-container {
-            width: 100%;
-            max-width: 440px;
+            width: 100%; max-width: 440px;
             animation: fadeInUp 0.6s ease-out;
-            position: relative;
-            z-index: 1;
+            position: relative; z-index: 1;
         }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-card {
             background: var(--surface);
             border-radius: 24px;
             padding: 48px;
-            box-shadow: 
-                0 20px 25px -5px rgba(0, 0, 0, 0.1),
-                0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            transition: background 0.3s;
         }
 
-        /* Logo Section */
-        .logo-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
+        .logo-section { text-align: center; margin-bottom: 40px; }
         .logo-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 24px;
+            width: 80px; height: 80px; margin: 0 auto 24px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; box-shadow: 0 10px 20px rgba(99,102,241,0.3);
             animation: float 3s ease-in-out infinite;
         }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         .logo-section h1 {
-            font-size: 36px;
-            font-weight: 700;
+            font-size: 36px; font-weight: 700;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
             margin-bottom: 8px;
         }
+        .logo-section p { color: var(--text-light); font-size: 16px; font-weight: 500; }
 
-        .logo-section p {
-            color: var(--text-light);
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        /* Form */
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            color: var(--text);
-        }
-
-        .input-wrapper {
-            position: relative;
-        }
-
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 18px;
-            color: var(--text-light);
-        }
-
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: var(--text); }
+        .input-wrapper { position: relative; }
+        .input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; color: var(--text-light); }
         .form-group input {
-            width: 100%;
-            padding: 14px 16px 14px 48px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s;
-            font-family: inherit;
-            background: var(--surface);
+            width: 100%; padding: 14px 16px 14px 48px;
+            border: 2px solid var(--border); border-radius: 12px;
+            font-size: 16px; transition: all 0.3s; font-family: inherit;
+            background: var(--surface); color: var(--text);
         }
+        .form-group input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,0.1); }
+        .form-group input::placeholder { color: var(--text-light); }
 
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-light);
-        }
-
-        /* Error Message */
         .error-message {
             background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            color: var(--danger);
-            padding: 14px 18px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-            border-left: 4px solid var(--danger);
-            animation: shake 0.5s;
+            color: var(--danger); padding: 14px 18px; border-radius: 12px;
+            margin-bottom: 24px; font-size: 14px; font-weight: 500;
+            display: none; border-left: 4px solid var(--danger); animation: shake 0.5s;
         }
+        .error-message.active { display: flex; align-items: center; gap: 10px; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
-        .error-message.active {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
-        /* Button */
         .btn-login {
-            width: 100%;
-            padding: 16px;
+            width: 100%; padding: 16px;
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: inherit;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            position: relative;
-            overflow: hidden;
+            color: white; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s; font-family: inherit;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+            position: relative; overflow: hidden;
         }
-
         .btn-login::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
             transition: left 0.5s;
         }
-
-        .btn-login:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        .btn-login:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-        }
-
-        .btn-login:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-login:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .btn-login:hover:not(:disabled)::before { left: 100%; }
+        .btn-login:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99,102,241,0.4); }
+        .btn-login:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-login.success { background: var(--success); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
 
         .loading-spinner {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 10px;
-            vertical-align: middle;
+            display: inline-block; width: 18px; height: 18px;
+            border: 3px solid rgba(255,255,255,0.3); border-top-color: white;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            margin-right: 10px; vertical-align: middle;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
+        .footer-text { text-align: center; margin-top: 28px; color: var(--text-light); font-size: 14px; font-weight: 500; }
+        .footer-badge { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--background); border-radius: 20px; margin-top: 12px; }
+        .status-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        /* Footer */
-        .footer-text {
-            text-align: center;
-            margin-top: 28px;
-            color: var(--text-light);
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .footer-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            background: var(--background);
-            border-radius: 20px;
-            margin-top: 12px;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Responsive */
         @media (max-width: 480px) {
-            .login-card {
-                padding: 32px 24px;
-            }
-            
-            .logo-section h1 {
-                font-size: 32px;
-            }
-            
-            .logo-icon {
-                width: 64px;
-                height: 64px;
-                font-size: 32px;
-            }
-        }
-
-        /* Success State */
-        .btn-login.success {
-            background: var(--success);
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            .login-card { padding: 32px 24px; }
+            .logo-section h1 { font-size: 32px; }
+            .logo-icon { width: 64px; height: 64px; font-size: 32px; }
         }
     </style>
 </head>
 <body>
+    <!-- Dark mode toggle top right -->
+    <button class="login-theme-toggle" onclick="toggleTheme()" title="Hell/Dunkel">
+        <span class="login-theme-moon">🌙</span>
+        <span class="login-theme-sun">☀️</span>
+        <div class="login-theme-thumb" id="loginThumb">☀️</div>
+    </button>
+
     <div class="login-container">
         <div class="login-card">
             <div class="logo-section">
-                <div class="logo-icon">🎯</div>
+                <div class="logo-icon">💼</div>
                 <h1>PolyHub</h1>
                 <p>Willkommen zurück</p>
             </div>
@@ -334,35 +204,17 @@
                     <label for="username">Benutzername</label>
                     <div class="input-wrapper">
                         <span class="input-icon">👤</span>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="Dein Benutzername"
-                            required
-                            autocomplete="username"
-                        >
+                        <input type="text" id="username" name="username" placeholder="Dein Benutzername" required autocomplete="username">
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label for="password">Passwort</label>
                     <div class="input-wrapper">
                         <span class="input-icon">🔒</span>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="••••••••"
-                            required
-                            autocomplete="current-password"
-                        >
+                        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
                     </div>
                 </div>
-
-                <button type="submit" class="btn-login" id="loginBtn">
-                    Anmelden
-                </button>
+                <button type="submit" class="btn-login" id="loginBtn">Anmelden</button>
             </form>
 
             <div class="footer-text">
@@ -376,103 +228,73 @@
 
     <script>
         const API_BASE = '/api';
-        const loginForm = document.getElementById('loginForm');
-        const loginBtn = document.getElementById('loginBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
 
-        // Check if already logged in
+        // Apply saved theme on load
         window.addEventListener('load', () => {
+            const saved = localStorage.getItem('polyhub-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            document.getElementById('loginThumb').textContent = saved === 'dark' ? '🌙' : '☀️';
+
             const token = localStorage.getItem('token');
-            if (token) {
-                verifyToken(token);
-            }
+            if (token) verifyToken(token);
+            document.getElementById('username').focus();
         });
 
-        // Verify existing token
-        async function verifyToken(token) {
-            try {
-                const response = await fetch(`${API_BASE}/auth/me`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    window.location.href = '/app.html';
-                } else {
-                    localStorage.removeItem('token');
-                }
-            } catch (error) {
-                localStorage.removeItem('token');
-            }
+        function toggleTheme() {
+            const cur = document.documentElement.getAttribute('data-theme');
+            const next = cur === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('polyhub-theme', next);
+            document.getElementById('loginThumb').textContent = next === 'dark' ? '🌙' : '☀️';
         }
 
-        // Login form handler
-        loginForm.addEventListener('submit', async (e) => {
+        async function verifyToken(token) {
+            try {
+                const r = await fetch(`${API_BASE}/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (r.ok) window.location.href = '/app.html';
+                else localStorage.removeItem('token');
+            } catch(e) { localStorage.removeItem('token'); }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
-            
-            if (!username || !password) {
-                showError('Bitte Benutzername und Passwort eingeben');
-                return;
-            }
+            if (!username || !password) { showError('Bitte Benutzername und Passwort eingeben'); return; }
 
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<span class="loading-spinner"></span> Anmeldung läuft...';
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner"></span> Anmeldung läuft...';
             hideError();
 
             try {
-                const response = await fetch(`${API_BASE}/auth/login`, {
+                const r = await fetch(`${API_BASE}/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
                 });
-
-                const data = await response.json();
-
-                if (response.ok && data.access_token) {
-                    // Token speichern
+                const data = await r.json();
+                if (r.ok && data.access_token) {
                     localStorage.setItem('token', data.access_token);
-                    
-                    // Success state
-                    loginBtn.classList.add('success');
-                    loginBtn.innerHTML = '✓ Erfolgreich!';
-                    
-                    // Redirect
-                    setTimeout(() => {
-                        window.location.href = '/app.html';
-                    }, 800);
+                    btn.classList.add('success');
+                    btn.innerHTML = '✓ Erfolgreich!';
+                    setTimeout(() => { window.location.href = '/app.html'; }, 800);
                 } else {
                     showError(data.detail || 'Anmeldung fehlgeschlagen');
                     resetButton();
                 }
-            } catch (error) {
-                console.error('Login error:', error);
+            } catch(e) {
                 showError('Verbindungsfehler. Bitte versuche es erneut.');
                 resetButton();
             }
         });
 
-        function showError(message) {
-            errorText.textContent = message;
-            errorMessage.classList.add('active');
-        }
-
-        function hideError() {
-            errorMessage.classList.remove('active');
-        }
-
+        function showError(msg) { document.getElementById('errorText').textContent = msg; document.getElementById('errorMessage').classList.add('active'); }
+        function hideError() { document.getElementById('errorMessage').classList.remove('active'); }
         function resetButton() {
-            loginBtn.disabled = false;
-            loginBtn.classList.remove('success');
-            loginBtn.innerHTML = 'Anmelden';
+            const btn = document.getElementById('loginBtn');
+            btn.disabled = false; btn.classList.remove('success'); btn.innerHTML = 'Anmelden';
         }
-
-        // Auto-focus username field
-        document.getElementById('username').focus();
     </script>
 </body>
 </html>
