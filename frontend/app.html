@@ -83,8 +83,6 @@
             font-size: 12px; line-height: 1;
         }
         [data-theme="dark"] .theme-toggle-thumb { transform: translateX(24px); }
-        .theme-toggle-icon-sun { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 11px; opacity: 0.7; }
-        .theme-toggle-icon-moon { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); font-size: 11px; opacity: 0.7; }
 
         .user-info { display: flex; align-items: center; gap: 0.75rem; }
         .user-avatar { width: 36px; height: 36px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; }
@@ -261,9 +259,7 @@
         <div class="header-right">
             <!-- Dark Mode Toggle -->
             <button class="theme-toggle" onclick="toggleTheme()" title="Hell/Dunkel">
-                <span class="theme-toggle-icon-moon">🌙</span>
-                <span class="theme-toggle-icon-sun">☀️</span>
-                <div class="theme-toggle-thumb">🌙</div>
+                <div class="theme-toggle-thumb" id="themeThumb">☀️</div>
             </button>
             <div class="user-info">
                 <div class="user-avatar" id="userAvatar">U</div>
@@ -468,7 +464,7 @@ function toggleTheme() {
     updateThumbIcon(next);
 }
 function updateThumbIcon(theme) {
-    const thumb = document.querySelector('.theme-toggle-thumb');
+    const thumb = document.getElementById('themeThumb');
     if (thumb) thumb.textContent = theme === 'dark' ? '🌙' : '☀️';
 }
 
