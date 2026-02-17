@@ -111,7 +111,7 @@ class CategoryResponse(CategoryBase):
 class TransactionBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=255)
     amount: Decimal = Field(..., gt=0)
-    type: str = Field(..., pattern="^(income|expense)$")
+    type: str = Field(..., pattern="^(income|expense|savings)$")
     date: date
     category_id: Optional[int] = None
     is_recurring: bool = False
