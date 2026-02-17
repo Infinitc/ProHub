@@ -268,3 +268,19 @@ class EmailUpdate(BaseModel):
     is_starred: Optional[bool] = None
     is_archived: Optional[bool] = None
     folder: Optional[str] = None
+
+class SavingsGoalCreate(BaseModel):
+    title: str
+    target_amount: float
+    current_amount: float = 0
+    description: str = ""
+
+class SavingsGoalResponse(BaseModel):
+    id: int
+    title: str
+    target_amount: float
+    current_amount: float
+    description: str | None
+    created_at: datetime
+    class Config:
+        from_attributes = True
