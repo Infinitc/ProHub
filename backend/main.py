@@ -34,7 +34,9 @@ app.add_middleware(
 try:
     from routers import auth, notes, calendar, finance, mail
     from caldav import caldav_server
-    
+    from routers import savings
+
+    app.include_router(savings.router, prefix="/api/finance/savings", tags=["savings"])
     app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
     app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
     app.include_router(calendar.router, prefix="/api/calendar", tags=["Calendar"])
@@ -64,6 +66,7 @@ async def health_check():
             "Mail client (IMAP/SMTP)"
         ]
     }
+
 
 # Root
 @app.get("/api")
